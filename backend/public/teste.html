@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Teste do chat</title>
+</head>
+<body>
+  <h1>Teste do chat</h1>
+
+  <form id="entrada">
+    <input id="apelido" placeholder="Seu apelido" autocomplete="off">
+    <button>Entrar</button>
+  </form>
+
+  <p id="status"></p>
+  <ul id="lista"></ul>
+
+  <form id="envio" hidden>
+    <input id="texto" placeholder="Mensagem" autocomplete="off">
+    <button>Enviar</button>
+  </form>
+
+  <!-- O próprio Socket.IO serve este arquivo: é o cliente do socket. -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const status = document.getElementById('status');
+    const lista = document.getElementById('lista');
+    const entrada = document.getElementById('entrada');
+    const envio = document.getElementById('envio');
+    const texto = document.getElementById('texto');
+
+    function mostrar(message) {
+      const item = document.createElement('li');
+      item.textContent = `${message.author}: ${message.content}`;
+      lista.appendChild(item);
+    }
+
+    entrada.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const nickname = document.getElementById('apelido').value;
+
+      const socket = io({ auth: { nickname } });
+
+      socket.on('connect', () => {
+        status.textContent = `online como ${nickname}`;
+        entrada.hidden = true;
+        envio.hidden = false;
+      });
+      socket.on('disconnect', () => {
+        status.textContent = 'offline';
+      });
+      socket.on('connect_error', (error) => {
+        status.textContent = `erro: ${error.message}`;
+      });
+      socket.on('message:new', mostrar);
+
+      const response = await fetch('/api/messages');
+      const messages = await response.json();
+      messages.forEach(mostrar);
+
+      envio.addEventListener('submit', (event) => {
+        event.preventDefault();
+        socket.emit('message:send', texto.value);
+        texto.value = '';
+      });
+    });
+  </script>
+</body>
+</html>

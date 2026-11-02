@@ -10,16 +10,16 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./db/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ./backend/db/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d crud_mpa"]
       interval: 5s
       timeout: 5s
       retries: 10
 
-  app:
+  backend:
     build:
-      context: .
+      context: backend
       dockerfile: Dockerfile
     container_name: crud_mpa_node
     working_dir: /app
@@ -34,7 +34,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - .:/app
+      - ./backend:/app
       - node_modules:/app/node_modules
     depends_on:
       db:
