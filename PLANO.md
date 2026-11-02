@@ -20,9 +20,28 @@ Cada etapa traz:
 | 3 | Tabela `messages` no Postgres | ✅ feito |
 | 4 | `GET /api/messages` (histórico) | ✅ feito |
 | 5 | Socket.IO (envio ao vivo) + página `teste.html` | ✅ feito |
-| 6 | Frontend React (Vite) | 🟡 base pronta (6.1 e 6.2); falta 6.3 em diante |
+| 6 | Frontend React (Vite) | ✅ TalkIA implementado conforme `PLANO_FRONTEND_TALKIA.md` |
 | 7 | Frontend dentro do Docker | ⬜ |
 | 8 | Validação final | ⬜ |
+
+### Atualização: experiência frontend TalkIA
+
+A base didática descrita abaixo foi preservada como histórico. A implementação
+atual avançou além do primeiro corte das etapas 6.3 a 6.7 e agora inclui:
+
+- login demonstrativo por apelido com persistência em `talkia.nickname`;
+- navegação entre Conversas, Equipes, Tarefas e AI Workspace;
+- Projeto Atlas conectado à sala global real do backend;
+- histórico e eventos ao vivo mesclados por `message_id`, sem duplicações;
+- conversas adicionais explicitamente demonstrativas e sem conexão com o socket;
+- estados de carregamento, erro, offline e reconexão;
+- painel TalkIA AI e AI Workspace em estado vazio, sem resultados fictícios;
+- layout responsivo e acessível para desktop, tablet e celular;
+- proxy do Vite para `/api` e `/socket.io`.
+
+Continuam pendentes autenticação real, equipes e salas persistidas, tarefas,
+decisões, arquivos, perfis, permissões e integração de IA. O frontend continua
+fora do Docker nesta etapa, conforme o escopo definido para o TalkIA.
 
 ### O que já existe no backend
 

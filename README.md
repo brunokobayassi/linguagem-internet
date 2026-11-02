@@ -1,10 +1,11 @@
-# Chat com React + Express + Socket.IO + PostgreSQL
+# TalkIA — frontend demonstrativo com chat em tempo real
 
-Chat em tempo real com uma sala só. Cada pessoa entra com um apelido, vê o
-histórico e recebe as mensagens novas na hora.
+O TalkIA transforma a sala global de chat já existente em uma experiência de
+produto para colaboração. Cada pessoa entra com um apelido, vê o histórico do
+**Projeto Atlas** e recebe mensagens novas em tempo real.
 
 - **backend:** Node.js, Express, Socket.IO e PostgreSQL, rodando no Docker
-- **frontend:** React com Vite (em construção, ver `PLANO.md`)
+- **frontend:** React com Vite, interface responsiva do TalkIA
 
 ## Estrutura
 
@@ -26,7 +27,9 @@ histórico e recebe as mensagens novas na hora.
 │   └── package.json
 ├── frontend/                 ← React + Vite
 │   ├── src/
-│   │   ├── App.jsx
+│   │   ├── components/      ← telas, navegação, chat e estados vazios
+│   │   ├── data/            ← conversas demonstrativas
+│   │   ├── App.jsx          ← sessão, seção e conversa ativas
 │   │   ├── index.css
 │   │   └── main.jsx
 │   ├── index.html
@@ -38,7 +41,7 @@ histórico e recebe as mensagens novas na hora.
 
 ## Executar
 
-### Backend (Docker)
+### 1. Backend (Docker)
 
 Na raiz do projeto:
 
@@ -49,7 +52,10 @@ docker compose up --build
 - API: `http://localhost:3000/api/messages`
 - Página de teste do chat: `http://localhost:3000/teste.html`
 
-### Frontend (Vite)
+Mantenha esse terminal aberto. O backend precisa estar disponível para carregar
+o histórico e conectar o chat ao vivo.
+
+### 2. Frontend (Vite)
 
 Em outro terminal, dentro de `frontend/`:
 
@@ -59,6 +65,36 @@ npm run dev
 ```
 
 Abra `http://localhost:5173`.
+
+O Vite encaminha `/api` e `/socket.io` para `http://localhost:3000`. Para usar
+outro destino, defina `API_URL` antes de iniciar o frontend.
+
+## O que funciona de verdade
+
+- sessão demonstrativa por apelido, salva em `talkia.nickname` no `localStorage`;
+- restauração da seção e conversa selecionadas;
+- histórico das últimas 50 mensagens do Projeto Atlas via `GET /api/messages`;
+- envio e recebimento em tempo real no Projeto Atlas via Socket.IO;
+- estados de conexão, reconexão, backend indisponível e nova tentativa;
+- mesclagem, ordenação e eliminação de mensagens duplicadas;
+- navegação por teclado e layout para desktop, tablet e celular.
+
+## O que é demonstrativo
+
+- a entrada por apelido **não é autenticação segura** e não usa senha ou token;
+- Design System Core e Sprint Planning Q3 não são salas reais e não abrem socket;
+- Equipes e Tarefas são estados vazios que dependem de evolução do backend;
+- o painel TalkIA AI e o AI Workspace não processam conversas nem geram conteúdo;
+- arquivos, perfis, permissões, múltiplas salas e automações ainda não existem.
+
+## Validar o frontend
+
+Dentro de `frontend/`:
+
+```bash
+npm run lint
+npm run build
+```
 
 ## Contrato da API
 
@@ -70,7 +106,8 @@ Abra `http://localhost:5173`.
 | Enviar (cliente → servidor) | evento `message:send` com o texto (1 a 500 caracteres) |
 | Receber (servidor → todos) | evento `message:new` com uma mensagem completa |
 
-Enviar mensagem é só pelo socket. O HTTP serve só para ler o histórico.
+Enviar mensagem é só pelo socket. O HTTP serve apenas para ler o histórico. A
+sala global atual é apresentada no frontend como Projeto Atlas.
 
 ## Volumes do Docker
 
